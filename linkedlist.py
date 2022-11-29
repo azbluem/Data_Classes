@@ -4,7 +4,7 @@ class Node:
         self.next = next
 
 class LinkedList:
-    def __init__(self,head):
+    def __init__(self,head=None):
         self.head = head
     
     def print_nodes(self):
@@ -15,12 +15,12 @@ class LinkedList:
         return
     
     def append(self,val,next=None):
-        new_node = Node(val,next=next)
+        new_node = Node(val,next)
         if self.head is None:
             self.head = new_node
             return
         end = self.head
-        while end!=None:
+        while end.next!=None:
             end = end.next
         end.next = new_node
 
@@ -73,4 +73,64 @@ class LinkedList:
 
         previous.next = current.next
         current = None
-        
+
+    def __len__(self):
+        count = 0
+        current = self.head
+        while current:
+            current = current.next
+            count += 1
+        return count
+    
+    def recursive_len(self,node):
+        if not node:
+            return 0
+        return 1+self.recursive_len(node.next)
+
+    def swap_nodes(self,val1,val2):
+        if val1==val2:
+            return
+        node1 = self.head
+        prev1 = None
+        node2 = self.head
+        prev2 = None
+
+        while node1 != val1 and node1:
+            prev1 = node1
+            node1 = node1.next
+        while node2 != val2 and node2:
+            prev2 = node2
+            node2 = node2.next
+        if not node1 and not node2:
+            return f'One of your given values {val1} or {val2} is not in the linked list'
+
+        if prev1:
+            prev1.next = node2
+        else:
+            self.head = node2
+
+        if prev2:
+            prev2.next = node1
+        else:
+            self.head = node1
+
+        node1.next,node2.next = node2.next,node1.next
+
+    def iterative_reversal(self):
+        current = self.head
+        prev = None
+        while current:
+            temp = current.next
+            current.next = prev
+            prev = current
+            current = temp
+        self.head = prev
+
+    def recursive_reversal(self,node):
+        current = node
+        if not current and not current.next:
+            return current
+        next_cur = self.recursive_reversal(current.next)
+        current.next.next = current
+        current.next = None
+        return next_cur
